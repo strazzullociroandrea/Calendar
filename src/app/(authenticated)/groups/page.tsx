@@ -4,9 +4,12 @@ import {Plus, UserPlus} from "lucide-react";
 import {GroupsView} from "@/components/groups/groups-view";
 import {useState} from "react";
 import {CreateGroup} from "@/components/groups/create-group";
+import {JoinGroup} from "@/components/groups/join-group";
+
 export default function GroupsPage() {
 
     const [isOpenCreateGroup, setIsOpenCreateGroup] = useState(false);
+    const [isOpenJoinGroup, setIsOpenJoinGroup] = useState(false);
 
     return (
         <div className="min-h-screen">
@@ -19,6 +22,7 @@ export default function GroupsPage() {
                         <Button
                             variant="outline"
                             className="min-w-[100px] font-light shadow-xs"
+                            onClick={() => setIsOpenJoinGroup(true)}
                         >
                             <UserPlus size={15}/>
                             <span>Unisciti</span>
@@ -32,7 +36,8 @@ export default function GroupsPage() {
                             <Plus size={15}/>
                             <span>Nuovo gruppo</span>
                         </Button>
-                        <CreateGroup open={isOpenCreateGroup} setOpen={setIsOpenCreateGroup} />
+                        <CreateGroup open={isOpenCreateGroup} setOpen={setIsOpenCreateGroup}/>
+                        <JoinGroup open={isOpenJoinGroup} setOpen={setIsOpenJoinGroup}/>
                     </div>
                 </div>
                 <GroupsView/>

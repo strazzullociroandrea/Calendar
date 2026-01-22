@@ -8,30 +8,26 @@ import {Badge} from '@/components/ui/badge';
 import {z} from "zod";
 import {useState} from 'react';
 import {Skeleton} from "@/components/ui/skeleton"
+import {groupSchema} from '@/lib/schemas/group';
+import {ConfirmDelete} from "@/components/groups/confirm-delete";
+import {toast} from "sonner";
+import {ConfirmQuit} from "@/components/groups/confirm-quit";
 
-
-const groupSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    invitation: z.string().nullable(),
-    _count: z.object({
-        members: z.number(),
-    }),
-
-})
 
 export function GroupsView() {
 
     const {data: groups, isLoading} = api.groups.getGroups.useQuery();
     const [copiedId, setCopiedId] = useState<string | null>(null);
-
+    const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
+    const [confirmQuit, setConfirmQuit] = useState<boolean>(false);
 
     const copyInviteCode = async (group: z.infer<typeof groupSchema>) => {
         try {
             await navigator.clipboard.writeText(group.invitation || '');
             setCopiedId(group.id);
+            setTimeout(() => setCopiedId(null), 2000);
         } catch (e) {
-
+            toast.error("Non è stato possibile copiare il codice invito. Riprovare più tardi.");
         }
     }
 
@@ -78,82 +74,91 @@ export function GroupsView() {
         );
     }
 
-        if (!groups || groups.length === 0) {
-            return (
-                <div className="mt-5 text-center py-10 border-2 border-dashed rounded-xl">
-                    <p className="text-muted-foreground">Non sei ancora membro di alcun gruppo.</p>
-                </div>
-            );
-        }
-
+    if (!groups || groups.length === 0) {
         return (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {groups.map((group) => (
-                    <Card key={group.id} className="mt-5 shadow-soft border-0 overflow-hidden animate-fade-in">
-
-                        <CardHeader className="pb-2">
-                            <div className="flex items-start justify-between">
-                                <CardTitle className="text-lg">{group.name}</CardTitle>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                                >
-                                    {group.invitation ? (
-                                        <Trash2 className="w-4 h-4"/>
-                                    ) : (
-                                        <LogOut className="w-4 h-4"/>
-                                    )}
-                                </Button>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-
-                            <p className="text-sm text-muted-foreground">
-                                {group.description}
-                            </p>
-
-                            <div className="flex items-center gap-2 flex-wrap">
-                                <Badge variant="secondary" className="gap-1">
-                                    <Users className="w-3 h-3"/>
-                                    {group._count.members} {group._count.members === 1 ? "membro" : "membri"}
-                                </Badge>
-                                {group.invitation && (
-                                    <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
-                                        Admin
-                                    </Badge>
-                                )}
-                            </div>
-                            {group.invitation && (
-                                <div className="pt-2 border-t border-border/50">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-xs text-muted-foreground mb-1">Codice invito</p>
-                                            <code
-                                                className="text-sm font-mono font-semibold tracking-widest bg-muted px-2 py-1 rounded">
-                                                {group.invitation}
-                                            </code>
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => copyInviteCode(group)}
-                                            className="gap-1 font-light"
-                                        >
-                                            {copiedId === group.id ? (
-                                                <Check className="w-4 h-4 text-green-500"/>
-                                            ) : (
-                                                <Copy className="w-4 h-4"/>
-                                            )}
-                                            {copiedId === group.id ? 'Copiato!' : 'Copia'}
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                ))}
+            <div className="mt-5 text-center py-10 border-2 border-dashed rounded-xl">
+                <p className="text-muted-foreground">Non sei ancora membro di alcun gruppo.</p>
             </div>
         );
+    }
+
+    return (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {groups.map((group) => (
+                <Card key={group.id} className="mt-5 shadow-soft border-0 overflow-hidden animate-fade-in">
+
+                    <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between">
+                            <CardTitle className="text-lg">{group.name}</CardTitle>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                onClick={() => group.invitation ? (() => {
+                                    setConfirmDelete(true);
+                                })() : (() => {
+                                    setConfirmQuit(true);
+                                })()}
+                            >
+                                {group.invitation ? (
+                                    <Trash2 className="w-4 h-4"/>
+                                ) : (
+                                    <LogOut className="w-4 h-4"/>
+                                )}
+                            </Button>
+
+                        </div>
+                        <ConfirmDelete open={confirmDelete} setOpen={setConfirmDelete} idToDelete={group.id}/>
+                        <ConfirmQuit open={confirmQuit} setOpen={setConfirmQuit} idToDelete={group.id}/>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+
+                        <p className="text-sm text-muted-foreground">
+                            {group.description}
+                        </p>
+
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Badge variant="secondary" className="gap-1">
+                                <Users className="w-3 h-3"/>
+                                {group._count.members} {group._count.members === 1 ? "membro" : "membri"}
+                            </Badge>
+                            {group.invitation && (
+                                <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
+                                    Admin
+                                </Badge>
+                            )}
+                        </div>
+                        {group.invitation && (
+                            <div className="pt-2 border-t border-border/50">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-muted-foreground mb-1">Codice invito</p>
+                                        <code
+                                            className="text-sm font-mono font-semibold tracking-widest bg-muted px-2 py-1 rounded">
+                                            {group.invitation}
+                                        </code>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => copyInviteCode(group)}
+                                        className="gap-1 font-light"
+                                    >
+                                        {copiedId === group.id ? (
+                                            <Check className="w-4 h-4 text-green-500"/>
+                                        ) : (
+                                            <Copy className="w-4 h-4"/>
+                                        )}
+                                        {copiedId === group.id ? 'Copiato!' : 'Copia'}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+            ))}
+        </div>
+    )
+        ;
 }
