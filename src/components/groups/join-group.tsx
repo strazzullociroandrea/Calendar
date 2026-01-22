@@ -20,7 +20,8 @@ export const JoinGroup = ({open, setOpen}: { open: boolean; setOpen: (open: bool
             toast.success("Fai ora parte al gruppo!");
         },
         onError: (error) => {
-            toast.error("Non è stato possibile unirti al gruppo. Controlla il codice e riprova.");
+            toast.error(error.message);
+            setOpen(false);
         }
     });
 

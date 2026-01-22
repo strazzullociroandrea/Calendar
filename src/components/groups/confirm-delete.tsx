@@ -19,8 +19,8 @@ export function ConfirmDelete({open, setOpen, idToDelete}: {
             toast.success("Gruppo eliminato con successo.");
             setOpen(false);
         },
-        onError: () => {
-            toast.error("Non è stato possibile eliminare il gruppo. Riprova più tardi.");
+        onError: (error) => {
+            toast.error(error.message);
             setOpen(false);
         }
     });

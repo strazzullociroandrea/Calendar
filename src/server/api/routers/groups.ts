@@ -5,38 +5,46 @@ import {TRPCError} from "@trpc/server";
 
 export const groupsRouter = createTRPCRouter({
     getGroups: protectedProcedure.query(async ({ctx}) => {
-        const userId = ctx.session.user.id;
 
-        const groups = await ctx.db.group.findMany({
-            where: {
-                OR: [
-                    {ownerId: userId},
-                    {
-                        members: {
-                            some: {
-                                userId: userId
+        try {
+            const userId = ctx.session.user.id;
+
+            const groups = await ctx.db.group.findMany({
+                where: {
+                    OR: [
+                        {ownerId: userId},
+                        {
+                            members: {
+                                some: {
+                                    userId: userId
+                                },
                             },
                         },
-                    },
-                ],
-            },
-            select: {
-                id: true,
-                name: true,
-                invitation: true,
-                description: true,
-                ownerId: true,
-                _count: {
-                    select: {members: true},
+                    ],
                 },
-            },
-        });
+                select: {
+                    id: true,
+                    name: true,
+                    invitation: true,
+                    description: true,
+                    ownerId: true,
+                    _count: {
+                        select: {members: true},
+                    },
+                },
+            });
 
-        return groups.map((group) => ({
-            ...group,
-            invitation: group.ownerId === userId ? group.invitation : null,
-            isOwner: group.ownerId === userId,
-        }));
+            return groups.map((group) => ({
+                ...group,
+                invitation: group.ownerId === userId ? group.invitation : null,
+                isOwner: group.ownerId === userId,
+            }));
+        } catch (e) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: "Non è stato possibile recuperare i gruppi. Riprova più tardi.",
+            });
+        }
     }),
     createGroup: protectedProcedure
         .input(CreateGroupSchema)
@@ -68,19 +76,14 @@ export const groupsRouter = createTRPCRouter({
                     if (attempts >= maxAttempts) {
                         throw new TRPCError({
                             code: "INTERNAL_SERVER_ERROR",
-                            message: "Non è stato possibile creare il gruppo dopo diversi tentativi.",
+                            message: "Non è stato possibile creare il gruppo. Riprova più tardi",
                         });
                     }
                 }
             }
 
-            if (group)
-                return group;
+            return group;
 
-            throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: "Non è stato possibile creare il gruppo. Riprova più tardi.",
-            });
         }),
     deleteGroup: protectedProcedure
         .input(deleteGroupSchema)

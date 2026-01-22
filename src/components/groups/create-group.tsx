@@ -27,7 +27,7 @@ export function CreateGroup({open, setOpen}: { open: boolean; setOpen: (open: bo
             toast.success("Gruppo creato con successo!");
         },
         onError: (error) => {
-            toast.error("Non è stato possibile creare il gruppo. Riprova più tardi.");
+            toast.error(error.message);
         }
     });
 

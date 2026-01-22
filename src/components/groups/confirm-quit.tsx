@@ -17,8 +17,8 @@ export function ConfirmQuit({open, setOpen, idToDelete}: {
             toast.success("Gruppo abbandonato con successo.");
             setOpen(false);
         },
-        onError: () => {
-            toast.error("Non è stato possibile abbandonare il gruppo. Riprova più tardi.");
+        onError: (error) => {
+            toast.error(error.message);
             setOpen(false);
         }
     });
