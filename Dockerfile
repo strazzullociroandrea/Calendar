@@ -9,7 +9,6 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma
 COPY src ./src
-COPY .env .env
 COPY . .
 
 
