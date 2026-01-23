@@ -21,7 +21,6 @@ export const JoinGroup = ({open, setOpen}: { open: boolean; setOpen: (open: bool
         },
         onError: (error) => {
             toast.error(error.message);
-            setOpen(false);
         }
     });
 

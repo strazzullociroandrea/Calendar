@@ -155,16 +155,9 @@ export function PersonalSession() {
                                             <div className="flex items-center gap-3 flex-wrap">
                                                 <div className="text-sm font-medium truncate">{session.parsed.deviceType} • {session.parsed.os}</div>
                                                 <div className="text-xs text-muted-foreground">{session.parsed.browser}</div>
-                                                {session.isCurrent && (
-                                                    <span className="ml-2 inline-flex items-center rounded-full bg-green-100 text-green-800 text-xs px-2 py-0.5">
-                                                        Questo dispositivo
-                                                    </span>
-                                                )}
+
                                             </div>
-                                            <div className="mt-2 text-sm text-foreground">
-                                                <strong>IP:</strong> {session.ipAddress ?? "Sconosciuto"}
-                                            </div>
-                                            <div className="text-sm text-muted-foreground mt-1">
+                                            <div className="mt-2 text-sm text-muted-foreground">
                                                 <strong>Ultimo accesso:</strong> {formatDateIso(session?.updatedAt ?? session?.createdAt)}
                                             </div>
                                             <div className="mt-2 text-xs text-muted-foreground break-all max-w-full">
@@ -177,7 +170,6 @@ export function PersonalSession() {
                                                 variant="destructive"
                                                 size="sm"
                                                 className="w-full sm:w-auto"
-                                                disabled={session.isCurrent || revokingId === session.id}
                                                 aria-label={`Revoca sessione ${session.id}`}
                                                 onClick={() => handleRevoke(session.id)}
                                             >

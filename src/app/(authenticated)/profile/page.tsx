@@ -1,6 +1,6 @@
 "use client";
 import {authClient} from "@/lib/auth-client";
-import {ProfileGroup} from "@/components/authenticated/profile";
+import {ProfileGroup} from "@/components/profile/profile";
 
 export default function Profile() {
 
