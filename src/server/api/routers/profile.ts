@@ -80,18 +80,6 @@ export const profileRouter = createTRPCRouter({
         .mutation(async ({ctx}) => {
             const userId = ctx.session.user.id;
 
-            //da sistemare la query
-            const userGroups = await ctx.db.userGroup.findFirst({
-                where: {userId: userId},
-            });
-
-            if (userGroups) {
-                throw new TRPCError({
-                    code: "CONFLICT",
-                    message: "Non è possibile eliminare il profilo. Prima devi abbandonare o eliminare i gruppi associati.",
-                });
-            }
-
             try {
                 await ctx.db.user.delete({where: {id: userId}});
 

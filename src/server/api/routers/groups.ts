@@ -149,6 +149,14 @@ export const groupsRouter = createTRPCRouter({
                 });
             }
 
+            const isOwner = group.ownerId === userId;
+            if (isOwner) {
+                throw new TRPCError({
+                    code: "CONFLICT",
+                    message: "Sei il proprietario di questo gruppo.",
+                });
+            }
+
             await ctx.db.userGroup.create({
                 data: {
                     groupId: group.id,
