@@ -4,6 +4,7 @@ import {Button} from "@/components/ui/button";
 import {api} from "@/trpc/react";
 import {toast} from "sonner";
 import {useRouter} from 'next/navigation';
+import {authClient} from "@/lib/auth-client";
 
 export function ConfirmDeleteAccount({open, setOpen}: {
     open: boolean;
@@ -19,7 +20,13 @@ export function ConfirmDeleteAccount({open, setOpen}: {
             await utils.groups.getGroups.invalidate();
             toast.success("Profilo eliminato con successo. Sarai reindirizzato alla pagina iniziale.");
             setOpen(false);
-            setTimeout(() => router.push("/"), 3000);
+            await authClient.signOut({
+                fetchOptions: {
+                    onSuccess: () => {
+                        router.push("/auth/login");
+                    },
+                },
+            });
         },
         onError: (error) => {
             toast.error(error.message);

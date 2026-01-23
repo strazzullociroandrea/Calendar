@@ -47,7 +47,7 @@ export function PersonalInformation() {
     });
 
     return (
-        <section aria-labelledby="personal-info-title" className="mx-auto max-w-3xl px-4">
+        <section aria-labelledby="personal-info-title" className="mx-auto max-w-5xl px-4">
             <Card>
                 <CardHeader>
                     <CardTitle id="personal-info-title" className="font-light text-lg">Informazioni personali</CardTitle>

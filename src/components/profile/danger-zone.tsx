@@ -15,12 +15,12 @@ export function DangerZone() {
                 <p className="text-sm text-red-600 mb-4">
                     Attenzione: l&apos;azione di cancellazione &egrave; irreversibile. Procedi con cautela.
                 </p>
-                <div className="flex justify-center">
+                <div className="flex justify-end p-3">
                     <Button type="button" variant="destructive" onClick={() => {
                         setShowConfirm(true);
                     }}
                             className="w-full sm:w-auto">
-                        Elimina profilo
+                        Elimina
                     </Button>
                     <ConfirmDeleteAccount setOpen={setShowConfirm} open={showConfirm}/>
                 </div>

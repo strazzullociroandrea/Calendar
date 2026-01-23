@@ -74,7 +74,7 @@ model Group {
   description String      @db.Text
   invitation  String      @unique
   ownerId     String
-  owner       User        @relation("GroupOwner", fields: [ownerId], references: [id])
+  owner       User        @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members     UserGroup[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt

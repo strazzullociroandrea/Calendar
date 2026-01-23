@@ -27,12 +27,23 @@ export const profileRouter = createTRPCRouter({
                 });
             }
 
+            const currentUser = await ctx.db.user.findUnique({
+                where: {id: userId},
+                select: {name: true, email: true}
+            });
+
+            if (currentUser?.name === input.name && currentUser?.email === input.email) {
+                return {
+                    name: input.name,
+                    email: input.email,
+                };
+            }
+
             return ctx.db.user.update({
                 where: {id: userId},
                 data: {
                     name: input.name,
-                    email: input.email,
-                    emailVerified: false,
+                    email: input.email
                 },
             });
         }),
@@ -84,6 +95,7 @@ export const profileRouter = createTRPCRouter({
                 await ctx.db.user.delete({where: {id: userId}});
 
                 return {success: true};
+
             } catch (e) {
                 throw new TRPCError({
                     code: "INTERNAL_SERVER_ERROR",
