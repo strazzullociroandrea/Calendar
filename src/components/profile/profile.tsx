@@ -1,6 +1,6 @@
-import {PersonalInformation} from "@/components/authenticated/personal-information";
-import {PersonalSession} from "@/components/authenticated/personal-session";
-import {DangerZone} from "@/components/authenticated/danger-zone";
+import {PersonalInformation} from "@/components/profile/personal-information";
+import {PersonalSession} from "@/components/profile/personal-session";
+import {DangerZone} from "@/components/profile/danger-zone";
 
 export function ProfileGroup() {
     return (

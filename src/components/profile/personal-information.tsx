@@ -112,7 +112,7 @@ export function PersonalInformation() {
                                 </div>
 
                                 <div className="flex justify-end">
-                                    <Button type="submit" className="w-full sm:w-auto" disabled={updateProfile.isPending} aria-disabled={updateProfile.isPending}>
+                                    <Button variant="secondary" type="submit" className="w-full sm:w-auto" disabled={updateProfile.isPending} aria-disabled={updateProfile.isPending}>
                                         {updateProfile.isPending ? "Salvataggio..." : "Salva modifiche"}
                                     </Button>
                                 </div>

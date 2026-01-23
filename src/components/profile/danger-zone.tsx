@@ -1,6 +1,10 @@
 import {Button} from "@/components/ui/button";
+import {useState} from "react";
+import {ConfirmDeleteAccount} from "@/components/profile/confirm-delete-account";
 
 export function DangerZone() {
+
+    const [showConfirm, setShowConfirm] = useState(false);
 
     return (
         <section aria-labelledby="danger-zone-title" className="mx-auto max-w-3xl px-4">
@@ -13,11 +17,12 @@ export function DangerZone() {
                 </p>
                 <div className="flex justify-center">
                     <Button type="button" variant="destructive" onClick={() => {
-                        alert("Funzionalit&agrave; di eliminazione del profilo non ancora implementata.");
+                        setShowConfirm(true);
                     }}
                             className="w-full sm:w-auto">
                         Elimina profilo
                     </Button>
+                    <ConfirmDeleteAccount setOpen={setShowConfirm} open={showConfirm}/>
                 </div>
             </div>
         </section>
