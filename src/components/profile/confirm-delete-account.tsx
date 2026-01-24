@@ -20,13 +20,15 @@ export function ConfirmDeleteAccount({open, setOpen}: {
             await utils.groups.getGroups.invalidate();
             toast.success("Profilo eliminato con successo. Sarai reindirizzato alla pagina iniziale.");
             setOpen(false);
-            await authClient.signOut({
-                fetchOptions: {
-                    onSuccess: () => {
-                        router.push("/auth/login");
+            setTimeout(async () => {
+                await authClient.signOut({
+                    fetchOptions: {
+                        onSuccess: () => {
+                            router.push("/auth/login");
+                        },
                     },
-                },
-            });
+                });
+            }, 3000);
         },
         onError: (error) => {
             toast.error(error.message);
