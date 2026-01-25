@@ -20,6 +20,7 @@ model User {
   accounts      Account[]
   groupsOwned   Group[]     @relation("GroupOwner")
   groupsJoined  UserGroup[]
+  events        Event[]
 
   @@map("user")
 }
@@ -78,6 +79,7 @@ model Group {
   members     UserGroup[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  events      Event[]
 
   @@map("group")
 }
@@ -93,4 +95,20 @@ model UserGroup {
 
   @@unique([userId, groupId])
   @@map("usergroup")
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  groupId   String?
+  title     String   @db.Text
+  details   String?  @db.Text
+  when      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  idOwner   String
+
+  owner User   @relation(fields: [idOwner], references: [id], onDelete: Cascade)
+  group Group? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@map("event")
 }

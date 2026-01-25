@@ -76,9 +76,9 @@ export function CalendarGrid({className, selectedDate, onSelectDate, events}: {
                                 aria-label="Oggi"
                                 onClick={() => {
                                     setCurrent(new Date(today.getFullYear(), today.getMonth(), 1));
-                                    setInternalSelectedDay(null);
+                                    setInternalSelectedDay(today.getDate());
                                 }}
-                                className="font-medium px-3 py-1.5 rounded-md bg-transparent hover:bg-neutral-50 transition text-neutral-700"
+                                className="font-medium px-3 py-1.5 rounded-md bg-transparent hover:bg-neutral-50 transition "
                             >
                                 Oggi
                             </Button>
@@ -112,23 +112,36 @@ export function CalendarGrid({className, selectedDate, onSelectDate, events}: {
                                 && current.getMonth() === today.getMonth()
                                 && current.getFullYear() === today.getFullYear();
 
+                            const isSelected = isCurrentMonth && dayNumber === internalSelectedDay;
 
-                            const classToday = isToday ? "bg-secondary/10 text-secondary font-medium  border-secondary hover:text-white"  : "";
+                            const classToday = isToday ? "bg-secondary/10 text-secondary font-medium  border-secondary hover:text-white" : "";
 
-                            const variant = () =>{
-                                if(isToday)
+                            const variant = () => {
+                                if (isToday)
                                     return "secondary";
-                                if(internalSelectedDay === dayNumber)
+                                if (internalSelectedDay === dayNumber)
                                     return "default";
-                                return isCurrentMonth ? "outline" : "ghost";
+                                return "ghost";
                             }
                             return (
                                 <Button
                                     key={index}
                                     variant={variant()}
-                                    className={classToday}
+                                    className={classToday + " h-15 w-full p-1 flex flex-col items-center justify-center rounded-md text-sm sm:text-base"}
+                                    disabled={!isCurrentMonth}
+                                    onClick={() => handleSelectDay(dayNumber)}
                                 >
-                                    {isCurrentMonth ? dayNumber : ""}
+                                    {isCurrentMonth && (
+
+                                        <><span className="leading-none text-white font-light">
+                                            {dayNumber}
+                                        </span>
+                                            <div
+                                                className="mt-1 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-medium text-white shadow-sm">
+                                                +1
+                                            </div>
+                                        </>
+                                    )}
                                 </Button>
                             )
                         })}
@@ -139,3 +152,4 @@ export function CalendarGrid({className, selectedDate, onSelectDate, events}: {
         </Card>
     )
 }
+

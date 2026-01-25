@@ -3,6 +3,7 @@ import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import {useState} from "react";
 import {CalendarGrid} from "@/components/home/calendar-grid";
+import {SelectedDayInfo} from "@/components/home/selected-day-info";
 
 export default function Home() {
     const router = useRouter();
@@ -38,12 +39,13 @@ export default function Home() {
                         />
                     </div>
 
-                     <aside className="w-full md:w-4/12 sm:pl-4">
-                        <div className="bg-white rounded-lg shadow p-4 h-full min-h-0">
-                            <h2 className="font-medium mb-2">Giorno selezionato:</h2>
+                     <div className="w-full md:w-4/12 sm:pl-4">
+                        <SelectedDayInfo
+                            selectedDate={selectedDate}
+                            onSelectDate={(date: Date) => setSelectedDate(date)}
+                        />
 
-                        </div>
-                    </aside>
+                    </div>
 
                 </div>
             </div>
